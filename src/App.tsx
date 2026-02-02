@@ -1,5 +1,10 @@
-import LoginPage from './pages/authentication/login-page'
+import { BrowserRouter } from 'react-router'
+import MainRoutes from '@/app/routes'
 
 export default function App() {
-  return <LoginPage />
+  return (
+    <BrowserRouter>
+      <MainRoutes />
+    </BrowserRouter>
+  )
 }
