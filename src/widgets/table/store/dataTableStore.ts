@@ -32,49 +32,43 @@ interface DataTableState {
   ) => void
 }
 
+/**
+ * Función genérica para crear setters de Zustand sin usar `any`.
+ * @param stateKey - Clave del estado a actualizar
+ * @returns Función setter para esa propiedad
+ */
+const createSetter =
+  <K extends keyof DataTableState>(stateKey: K) =>
+  (
+    set: (
+      partial: Partial<DataTableState> | ((state: DataTableState) => Partial<DataTableState>),
+    ) => void,
+  ) =>
+  (updaterOrValue: DataTableState[K] | ((old: DataTableState[K]) => DataTableState[K])) => {
+    set(state => ({
+      [stateKey]:
+        typeof updaterOrValue === 'function'
+          ? (updaterOrValue as (old: DataTableState[K]) => DataTableState[K])(state[stateKey])
+          : updaterOrValue,
+    }))
+  }
+
+/**
+ * Store de Zustand para manejar el estado de la tabla.
+ */
 export const useDataTableStore = create<DataTableState>(set => ({
   sorting: [],
-  setSorting: updaterOrValue =>
-    set(state => ({
-      sorting:
-        typeof updaterOrValue === 'function'
-          ? (updaterOrValue as any)(state.sorting)
-          : updaterOrValue,
-    })),
+  setSorting: createSetter('sorting')(set),
 
   columnFilters: [],
-  setColumnFilters: updaterOrValue =>
-    set(state => ({
-      columnFilters:
-        typeof updaterOrValue === 'function'
-          ? (updaterOrValue as any)(state.columnFilters)
-          : updaterOrValue,
-    })),
+  setColumnFilters: createSetter('columnFilters')(set),
 
   columnVisibility: {},
-  setColumnVisibility: updaterOrValue =>
-    set(state => ({
-      columnVisibility:
-        typeof updaterOrValue === 'function'
-          ? (updaterOrValue as any)(state.columnVisibility)
-          : updaterOrValue,
-    })),
+  setColumnVisibility: createSetter('columnVisibility')(set),
 
   pagination: { pageIndex: 0, pageSize: 10 },
-  setPagination: updaterOrValue =>
-    set(state => ({
-      pagination:
-        typeof updaterOrValue === 'function'
-          ? (updaterOrValue as any)(state.pagination)
-          : updaterOrValue,
-    })),
+  setPagination: createSetter('pagination')(set),
 
   rowSelection: {},
-  setRowSelection: updaterOrValue =>
-    set(state => ({
-      rowSelection:
-        typeof updaterOrValue === 'function'
-          ? (updaterOrValue as any)(state.rowSelection)
-          : updaterOrValue,
-    })),
+  setRowSelection: createSetter('rowSelection')(set),
 }))

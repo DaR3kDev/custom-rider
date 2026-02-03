@@ -12,6 +12,7 @@ interface Product {
   id: number
   product: string
   price: string
+  status: 'active' | 'inactive'
 }
 
 export default function DashboardPage() {
@@ -52,26 +53,16 @@ export default function DashboardPage() {
   ]
 
   const data: Product[] = [
-    { id: 1, product: 'Wireless Mouse', price: '$29.99' },
-    { id: 2, product: 'Mechanical Keyboard', price: '$129.99' },
-    { id: 3, product: 'USB-C Hub', price: '$49.99' },
-    { id: 4, product: 'USB-C Hub', price: '$49.99' },
-    { id: 5, product: 'USB-C Hub', price: '$49.99' },
-    { id: 6, product: 'USB-C Hub', price: '$49.99' },
-    { id: 7, product: 'USB-C Hub', price: '$49.99' },
-    { id: 8, product: 'USB-C Hub', price: '$49.99' },
-    { id: 9, product: 'USB-C Hub', price: '$49.99' },
-    { id: 10, product: 'USB-C Hub', price: '$49.99' },
-    { id: 11, product: 'USB-C Hub', price: '$49.99' },
-    { id: 12, product: 'USB-C Hub', price: '$49.99' },
-    { id: 13, product: 'USB-C Hub', price: '$49.99' },
-    { id: 14, product: 'USB-C Hub', price: '$49.99' },
-    { id: 15, product: 'USB-C Hub', price: '$49.99' },
+    { id: 1, product: 'Wireless Mouse', price: '$29.99', status: 'active' },
+    { id: 2, product: 'Mechanical Keyboard', price: '$129.99', status: 'inactive' },
+    { id: 3, product: 'USB-C Hub', price: '$49.99', status: 'active' },
+    { id: 4, product: 'USB-C Hub', price: '$49.99', status: 'inactive' },
   ]
 
   const columns: ColumnDef<Product>[] = [
     { accessorKey: 'product', header: 'Producto' },
     { accessorKey: 'price', header: 'Precio' },
+    { accessorKey: 'status', header: 'Estado', filterFn: 'equalsString' },
   ]
 
   return (
@@ -102,7 +93,20 @@ export default function DashboardPage() {
       </div>
 
       <div className="w-full">
-        <DataTable search={true} data={data} columns={columns} />
+        <DataTable
+          data={data}
+          columns={columns}
+          search={true}
+          tabs={{
+            defaultValue: 'all',
+            column: 'status',
+            items: [
+              { label: 'Todos', value: 'all' },
+              { label: 'Activos', value: 'active' },
+              { label: 'Inactivos', value: 'inactive' },
+            ],
+          }}
+        />
       </div>
     </div>
   )
