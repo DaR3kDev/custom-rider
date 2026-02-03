@@ -34,12 +34,12 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
    */
   {
     title: 'Personas',
-    url: '/people',
+    url: '/dashboard/people',
     icon: Users,
     roles: ['ADMIN'],
     items: [
-      { title: 'Usuarios del sistema', url: '/users' },
-      { title: 'Clientes', url: '/clients' },
+      { title: 'Usuarios del sistema', url: '/dashboard/people/users' },
+      { title: 'Clientes', url: '/dashboard/people/clients' },
     ],
   },
 

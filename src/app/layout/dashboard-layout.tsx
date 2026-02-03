@@ -9,8 +9,13 @@ import {
 import { Separator } from '@/shared/ui/separator'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/shared/ui/sidebar'
 import { AppSidebar } from '@/widgets/sidebar/ui/app-sidebar'
+import { Outlet, useLocation } from 'react-router'
 
 export default function DashboardLayout() {
+  const location = useLocation()
+  const pathnames = location.pathname.split('/').filter(Boolean)
+  const capitalize = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -21,25 +26,27 @@ export default function DashboardLayout() {
             <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4" />
             <Breadcrumb>
               <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">Building Your Applicatio</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                </BreadcrumbItem>
+                {pathnames.map((name: string, index: number) => {
+                  const href = '/' + pathnames.slice(0, index + 1).join('/')
+                  const isLast = index === pathnames.length - 1
+                  return (
+                    <BreadcrumbItem key={index}>
+                      {isLast ? (
+                        <BreadcrumbPage>{capitalize(name)}</BreadcrumbPage>
+                      ) : (
+                        <BreadcrumbLink href={href}>{capitalize(name)}</BreadcrumbLink>
+                      )}
+                      {!isLast && <BreadcrumbSeparator className="hidden md:block" />}
+                    </BreadcrumbItem>
+                  )
+                })}
               </BreadcrumbList>
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-            <div className="bg-muted/50 aspect-video rounded-xl" />
-          </div>
-          <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min" />
-        </div>
+        <main className="flex flex-1 flex-col gap-4 p-4 pt-0">
+          <Outlet />
+        </main>
       </SidebarInset>
     </SidebarProvider>
   )
